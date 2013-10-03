@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import bo.aduana.gob.demomongo.model.Aduana;
 import bo.aduana.gob.demomongo.model.Form;
 import bo.aduana.gob.demomongo.model.JsonForm;
 import bo.aduana.gob.demomongo.model.JsonResult;
-import bo.aduana.gob.demomongo.model.Select;
-import bo.aduana.gob.demomongo.model.ServiceSelect;
 import bo.aduana.gob.demomongo.service.FormService;
 
    
@@ -35,5 +34,9 @@ public class FormController {
     	JsonResult jsonResult = formService.saveForm(jsonForm);
     	return jsonResult;
 	}
-           
+    
+    @RequestMapping(value="/rest/saveAduana", method = RequestMethod.POST)
+   	public @ResponseBody void setAduana(Aduana aduana) {				
+       	 formService.saveAduana(aduana);       	
+   	}                 
 }

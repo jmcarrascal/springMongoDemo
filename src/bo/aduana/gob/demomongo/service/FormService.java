@@ -1,6 +1,7 @@
 package bo.aduana.gob.demomongo.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,10 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import bo.aduana.gob.demomongo.model.Aduana;
 import bo.aduana.gob.demomongo.model.Form;
 import bo.aduana.gob.demomongo.model.JsonForm;
 import bo.aduana.gob.demomongo.model.JsonResult;
-import bo.aduana.gob.demomongo.model.Select;
-import bo.aduana.gob.demomongo.model.ServiceSelect;
-import bo.aduana.gob.demomongo.util.Constants;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -26,7 +25,7 @@ public class FormService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
-	public static final String COLLECTION_NAME = "forms";
+	public static final String COLLECTION_NAME = "aduana";
 	
 	public List<Form> listForm() {
 		return mongoTemplate.findAll(Form.class, COLLECTION_NAME);
@@ -42,24 +41,10 @@ public class FormService {
 	
 	public JsonResult saveForm(JsonForm jsonForm){	 
 		DBObject dbObject = (DBObject)JSON.parse(jsonForm.getJson());
-		JsonResult jsonResult = new JsonResult();
-		if (jsonForm.getMode().equals("edit")){
-			String idStr = (String) dbObject.get( "_id" );
-			dbObject.put("_id", new ObjectId(idStr));
-			mongoTemplate.getCollection(COLLECTION_NAME).save(dbObject);				
-			jsonResult.setResult("updated");
-			jsonResult.setSuccess(true);
-		}else{
-			//Put the version and status from ..... temp static var
-			DBObject header = (DBObject) dbObject.get("header");
-			header.put("version", Constants.FORM_FIRST_VERSION);
-			header.put("status", Constants.FORM_FIRST_STATUS);
-			dbObject.put("header" , header);		
-			mongoTemplate.getCollection(COLLECTION_NAME).insert(dbObject);				
-			jsonResult.setResult("inserted");
-			jsonResult.setSuccess(true);			
-		}
-		
+		JsonResult jsonResult = new JsonResult();	
+		mongoTemplate.getCollection(COLLECTION_NAME).insert(dbObject);				
+		jsonResult.setResult("inserted");
+		jsonResult.setSuccess(true);			
 		
 		return jsonResult;
 	}
@@ -101,6 +86,10 @@ public class FormService {
 		return jsonResult;
 	}
 
+	public void saveAduana(Aduana aduana){
+		aduana.setId(UUID.randomUUID().toString());
+		mongoTemplate.insert(aduana,COLLECTION_NAME);
+	} 
 	
 	
 

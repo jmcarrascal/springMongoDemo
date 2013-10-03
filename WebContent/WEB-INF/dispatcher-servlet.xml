@@ -27,7 +27,7 @@
 	   
 	<mvc:annotation-driven /> 
 
-	<context:component-scan base-package="ar.gob.cnc.formbuilder" />
+	<context:component-scan base-package="bo.aduana.gob.demomongo" />
 
 	<bean id="jspViewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
